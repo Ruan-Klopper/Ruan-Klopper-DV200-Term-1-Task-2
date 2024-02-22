@@ -1,5 +1,39 @@
 const APIKEY = "";
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// DO NOT REVEAL YOUR API KEY
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 // Async await and function with 4 parameters well actually 5 parameters
 async function searchRecipes(
   foodName,
@@ -26,6 +60,75 @@ async function searchRecipes(
     return ids;
   } catch (error) {
     console.error(error);
+  }
+}
+
+// Without using the arrow function
+async function getRecipe(recipeName, howMany) {
+  try {
+    let recipesID = await searchRecipes(recipeName, "", "", "", howMany); // Test of await
+
+    recipesID = Array.isArray(recipesID) ? recipesID : [recipesID];
+
+    for (let i = 0; i < recipesID.length; i++) {
+      const singleID = recipesID[i];
+      let counter = i + 1;
+
+      await getRecipesInformationBulk(singleID)
+        .then((result) => {
+          console.log("\n\nRecipe No:" + counter);
+          console.log("\nRecipe result:\n" + result);
+        })
+        .catch((error) => {
+          console.error("Error fetching recipe information");
+          console.error(error);
+        });
+    }
+  } catch (error) {
+    console.error("Error searching recipes");
+    console.error(error);
+    return;
+  }
+}
+
+// Arrow function
+const getArrowRecipe = async (recipeName, howMany) => {
+  try {
+    let output = "";
+    let recipesID = await searchRecipes(recipeName, "", "", "", howMany); // Test of await
+
+    recipesID = Array.isArray(recipesID) ? recipesID : [recipesID];
+
+    for (let i = 0; i < recipesID.length; i++) {
+      const singleID = recipesID[i];
+      let counter = i + 1;
+
+      await getRecipesInformationBulk(singleID)
+        .then((result) => {
+          output = "\n\nRecipe No:" + counter + "\nRecipe result:\n" + result;
+        })
+        .catch((error) => {
+          console.error("Error fetching recipe information");
+          console.error(error);
+        });
+    }
+
+    return output;
+  } catch (error) {
+    console.error("Error searching recipes");
+    console.error(error);
+    return;
+  }
+};
+
+// Callbacks
+function getFood(callback) {
+  const gotFood = Math.random() > 0.5; // Simulating getting food randomly can also be a simulation of a server trying to fetch data
+
+  if (gotFood) {
+    callback(null, "Yay, I got food!");
+  } else {
+    callback("Oh no, I didn't get food!", null);
   }
 }
 
@@ -92,78 +195,9 @@ function checkNumber(number) {
   }
 }
 
-function getFood() {
-  return new Promise((resolve, reject) => {
-    const gotFood = Math.random() > 0.5; // Simulation of something running, eg. waiting for a server response
+// Executing of everything
 
-    if (gotFood) {
-      resolve("Yay, I got food!");
-    } else {
-      reject("Oh no, I didn't get food!");
-    }
-  });
-}
-
-// Async
-async function getRecipe(recipeName, howMany) {
-  try {
-    let recipesID = await searchRecipes(recipeName, "", "", "", howMany); // Test of await
-
-    recipesID = Array.isArray(recipesID) ? recipesID : [recipesID];
-
-    for (let i = 0; i < recipesID.length; i++) {
-      const singleID = recipesID[i];
-      let counter = i + 1;
-
-      await getRecipesInformationBulk(singleID)
-        .then((result) => {
-          console.log("\n\nRecipe No:" + counter);
-          console.log("\nRecipe result:\n" + result);
-        })
-        .catch((error) => {
-          console.error("Error fetching recipe information");
-          console.error(error);
-        });
-    }
-  } catch (error) {
-    console.error("Error searching recipes");
-    console.error(error);
-    return;
-  }
-}
-
-// Arrow function
-const getArrowRecipe = async (recipeName, howMany) => {
-  try {
-    let output = "";
-    let recipesID = await searchRecipes(recipeName, "", "", "", howMany); // Test of await
-
-    recipesID = Array.isArray(recipesID) ? recipesID : [recipesID];
-
-    for (let i = 0; i < recipesID.length; i++) {
-      const singleID = recipesID[i];
-      let counter = i + 1;
-
-      await getRecipesInformationBulk(singleID)
-        .then((result) => {
-          output = "\n\nRecipe No:" + counter + "\nRecipe result:\n" + result;
-        })
-        .catch((error) => {
-          console.error("Error fetching recipe information");
-          console.error(error);
-        });
-    }
-
-    return output;
-  } catch (error) {
-    console.error("Error searching recipes");
-    console.error(error);
-    return;
-  }
-};
-
-// Test
-getRecipe("Burger", 1); //Async await, promises, arrow functions
+getRecipe("Burger", 1); //Async await
 
 getArrowRecipe("Burger", 1) // Arrow function output
   .then((output) => {
